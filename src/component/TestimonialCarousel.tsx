@@ -11,10 +11,9 @@ interface Testimonial {
   company: string;
   content: string;
   initials: string;
-  featured: boolean;
 }
 
-const defaultTestimonials: Testimonial[] = [
+const testimonials: Testimonial[] = [
   {
     id: 1,
     name: 'Ahmed Hassan',
@@ -22,7 +21,6 @@ const defaultTestimonials: Testimonial[] = [
     company: 'TechStartup Inc',
     content: 'Abdul transformed our vision into reality. His full-stack expertise and attention to detail resulted in a product that exceeded our expectations.',
     initials: 'AH',
-    featured: true,
   },
   {
     id: 2,
@@ -31,7 +29,6 @@ const defaultTestimonials: Testimonial[] = [
     company: 'Design Studio Co',
     content: 'Working with Abdul was a game-changer. His ability to bridge design and engineering created seamless user experiences that our customers love.',
     initials: 'SW',
-    featured: true,
   },
   {
     id: 3,
@@ -40,12 +37,10 @@ const defaultTestimonials: Testimonial[] = [
     company: 'Enterprise Solutions',
     content: 'The scalability and performance of the system Abdul built for us is outstanding. He understood our growth trajectory perfectly.',
     initials: 'MA',
-    featured: true,
   },
 ];
 
 export default function TestimonialCarousel() {
-  const [testimonials] = useState<Testimonial[]>(defaultTestimonials);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
@@ -55,7 +50,7 @@ export default function TestimonialCarousel() {
       setCurrentIndex((prev) => (prev + 1) % testimonials.length);
     }, 5000);
     return () => clearInterval(interval);
-  }, [isAutoPlaying, testimonials.length]);
+  }, [isAutoPlaying]);
 
   const handleNext = () => {
     setIsAutoPlaying(false);
@@ -67,56 +62,55 @@ export default function TestimonialCarousel() {
     setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
   };
 
-  if (testimonials.length === 0) return null;
-
   const currentTestimonial = testimonials[currentIndex];
 
   return (
-    <section className="py-20">
-      <div className="w-full max-w-5xl mx-auto px-4">
+    <section className="py-24">
+      <div className="w-full max-w-4xl mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
           className="space-y-12"
         >
           {/* Header */}
-          <div className="text-center space-y-4">
-            <h2 className="text-4xl md:text-5xl font-bold text-balance bg-clip-text text-transparent bg-linear-to-r from-purple-500 via-pink-500 to-cyan-500">
-              What People Say
+          <div className="text-center space-y-3">
+            <h2 className="text-3xl md:text-5xl font-bold text-balance text-foreground">
+              What People{" "}
+              <span className="bg-clip-text text-transparent bg-linear-to-r from-primary to-accent">
+                Say
+              </span>
             </h2>
-            <p className="text-lg text-gray-300">
+            <p className="text-muted-foreground">
               {"Feedback from colleagues and clients I've worked with"}
             </p>
           </div>
 
           {/* Carousel */}
-          <div className="relative p-8 md:p-12 rounded-xl border border-border backdrop-blur-sm bg-linear-to-r from-purple-900/20 to-cyan-900/20 min-h-72 flex flex-col justify-center">
+          <div className="relative p-8 md:p-12 rounded-2xl border border-border bg-card/30 backdrop-blur-sm min-h-64 flex flex-col justify-center">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentIndex}
-                initial={{ opacity: 0, x: 50 }}
+                initial={{ opacity: 0, x: 30 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
-                transition={{ duration: 0.4 }}
+                exit={{ opacity: 0, x: -30 }}
+                transition={{ duration: 0.3 }}
                 className="space-y-6"
               >
-                {/* Quote Mark */}
-                <div className="text-5xl text-purple-500/30 font-serif">{'"'}</div>
-
                 {/* Testimonial Content */}
-                <p className="text-xl leading-relaxed italic text-gray-200">
-                  {currentTestimonial.content}
+                <p className="text-lg md:text-xl leading-relaxed text-card-foreground italic">
+                  {'"'}{currentTestimonial.content}{'"'}
                 </p>
 
                 {/* Author */}
-                <div className="flex items-center gap-4 pt-6 border-t border-gray-500/20">
-                  <div className="w-12 h-12 rounded-full bg-linear-to-br from-purple-500 to-cyan-500 flex items-center justify-center text-white font-bold text-sm">
+                <div className="flex items-center gap-4 pt-4 border-t border-border">
+                  <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-semibold text-sm">
                     {currentTestimonial.initials}
                   </div>
                   <div>
-                    <p className="font-bold text-white">{currentTestimonial.name}</p>
-                    <p className="text-sm text-gray-400">
+                    <p className="font-medium text-sm text-card-foreground">{currentTestimonial.name}</p>
+                    <p className="text-xs text-muted-foreground">
                       {currentTestimonial.role} at {currentTestimonial.company}
                     </p>
                   </div>
@@ -129,16 +123,16 @@ export default function TestimonialCarousel() {
               <button
                 onClick={handlePrev}
                 aria-label="Previous testimonial"
-                className="p-2 rounded-full bg-gray-800 hover:bg-primary text-gray-400 hover:text-white transition-all"
+                className="p-2 rounded-lg border border-border bg-card/50 text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all"
               >
-                <FiChevronLeft className="w-5 h-5" />
+                <FiChevronLeft className="w-4 h-4" />
               </button>
               <button
                 onClick={handleNext}
                 aria-label="Next testimonial"
-                className="p-2 rounded-full bg-gray-800 hover:bg-primary text-gray-400 hover:text-white transition-all"
+                className="p-2 rounded-lg border border-border bg-card/50 text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all"
               >
-                <FiChevronRight className="w-5 h-5" />
+                <FiChevronRight className="w-4 h-4" />
               </button>
             </div>
           </div>
@@ -153,10 +147,10 @@ export default function TestimonialCarousel() {
                   setCurrentIndex(index);
                 }}
                 aria-label={`Go to testimonial ${index + 1}`}
-                className={`h-2 rounded-full transition-all ${
+                className={`h-1.5 rounded-full transition-all ${
                   index === currentIndex
                     ? 'w-8 bg-primary'
-                    : 'w-2 bg-gray-600 hover:bg-gray-500'
+                    : 'w-1.5 bg-muted-foreground/30 hover:bg-muted-foreground/50'
                 }`}
               />
             ))}

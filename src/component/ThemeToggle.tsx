@@ -3,6 +3,7 @@
 import { FaMoon, FaSun } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 
+/** Theme toggle button - switches between light and dark mode */
 export default function ThemeToggle() {
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   const [mounted, setMounted] = useState(false);
@@ -32,13 +33,13 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+      className="p-2 rounded-lg bg-muted/50 text-foreground hover:bg-muted transition-colors"
       aria-label="Toggle theme"
     >
       {theme === 'dark' ? (
-        <FaSun className="w-5 h-5" />
+        <FaSun className="w-4 h-4" />
       ) : (
-        <FaMoon className="w-5 h-5" />
+        <FaMoon className="w-4 h-4" />
       )}
     </button>
   );

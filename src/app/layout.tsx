@@ -67,7 +67,7 @@ export default function RootLayout({
         <header>
           <Navbar />
         </header>
-        <main className="pt-[70px]">{children}</main>
+        <main className="pt-16 relative z-10">{children}</main>
         <Footer />
       </body>
     </html>

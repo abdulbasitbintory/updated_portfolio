@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import ThemeToggle from "./ThemeToggle";
 
 const navLinks = [
@@ -14,7 +14,6 @@ const navLinks = [
   { name: "Projects", href: "/projects" },
   { name: "Certifications", href: "/certifications" },
   { name: "Education", href: "/education" },
-  { name: "Events", href: "/events" },
   { name: "Contact", href: "/contact" },
 ];
 
@@ -31,70 +30,81 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close menu on route change
   useEffect(() => {
     setIsMenuOpen(false);
   }, [pathname]);
+
+  // Lock body scroll when menu is open
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMenuOpen]);
 
   return (
     <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
-      className={`w-full h-[70px] fixed top-0 z-30 transition-all duration-300 ${
+      className={`w-full h-16 fixed top-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-[#030014]/90 backdrop-blur-md shadow-lg shadow-[#2A0E61]/50"
+          ? "bg-background/80 backdrop-blur-xl border-b border-border"
           : "bg-transparent"
       }`}
     >
-      <div className="w-full h-full flex items-center justify-between px-4 md:px-10">
+      <div className="w-full h-full flex items-center justify-between px-4 md:px-8 max-w-7xl mx-auto">
         {/* Logo */}
-        <Link href="/" className="h-auto w-auto flex items-center">
-          <div className="flex items-center gap-2">
-            <div className="relative">
-              <Image
-                src="/globe4.svg"
-                alt="Abdul Basit Portfolio Logo"
-                width={50}
-                height={50}
-                className="cursor-pointer hover:animate-pulse"
-              />
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full animate-ping" />
-            </div>
-            <span className="font-bold text-xl bg-clip-text text-transparent bg-linear-to-r from-primary to-accent hidden sm:inline">
-              Abdul Basit
-            </span>
+        <Link href="/" className="flex items-center gap-2.5">
+          <div className="relative">
+            <Image
+              src="/globe4.svg"
+              alt="Abdul Basit Portfolio Logo"
+              width={36}
+              height={36}
+              className="hover:opacity-80 transition-opacity"
+            />
           </div>
+          <span className="font-bold text-lg text-foreground hidden sm:inline">
+            Abdul Basit
+          </span>
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden lg:flex items-center gap-6">
+        <div className="hidden lg:flex items-center gap-1">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
               <Link
                 key={link.name}
                 href={link.href}
-                className={`relative text-sm font-medium transition-colors group ${
+                className={`relative px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
                   isActive
-                    ? "text-white"
-                    : "text-gray-400 hover:text-white"
+                    ? "text-foreground bg-muted/50"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
                 }`}
               >
                 {link.name}
-                <span
-                  className={`absolute -bottom-1 left-0 h-0.5 bg-primary transition-all duration-300 ${
-                    isActive ? "w-full" : "w-0 group-hover:w-full"
-                  }`}
-                />
+                {isActive && (
+                  <motion.div
+                    layoutId="navbar-indicator"
+                    className="absolute bottom-0 left-3 right-3 h-0.5 bg-primary rounded-full"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
               </Link>
             );
           })}
         </div>
 
-        {/* Social Icons & Theme Toggle */}
-        <div className="hidden lg:flex items-center gap-3">
+        {/* Right Side: Social Icons & Theme Toggle */}
+        <div className="hidden lg:flex items-center gap-2">
           <ThemeToggle />
+          <div className="w-px h-5 bg-border mx-1" />
           {Socials.map((social) => (
             <a
               key={social.name}
@@ -102,14 +112,14 @@ const Navbar = () => {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={social.description}
-              className="p-1.5 rounded-full bg-[#030014]/50 border border-border hover:bg-primary/20 transition-all duration-300"
+              className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-all"
             >
               <Image
                 src={social.src}
                 alt={social.name}
-                width={20}
-                height={20}
-                className="invert"
+                width={18}
+                height={18}
+                className="invert opacity-70 hover:opacity-100 transition-opacity"
               />
             </a>
           ))}
@@ -117,25 +127,25 @@ const Navbar = () => {
 
         {/* Mobile Menu Button */}
         <button
-          className="lg:hidden z-50"
+          className="lg:hidden z-50 p-2 rounded-lg hover:bg-muted/30 transition-colors"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           aria-label="Toggle navigation menu"
           aria-expanded={isMenuOpen}
         >
-          <div className="w-8 h-8 flex flex-col justify-center items-center">
+          <div className="w-5 h-5 flex flex-col justify-center items-center gap-1">
             <span
-              className={`block w-6 h-0.5 bg-white transition-all duration-300 ${
-                isMenuOpen ? "rotate-45 translate-y-1.5" : ""
+              className={`block w-5 h-0.5 bg-foreground transition-all duration-300 origin-center ${
+                isMenuOpen ? "rotate-45 translate-y-[3px]" : ""
               }`}
             />
             <span
-              className={`block w-6 h-0.5 bg-white mt-1 transition-all duration-300 ${
-                isMenuOpen ? "opacity-0" : "opacity-100"
+              className={`block w-5 h-0.5 bg-foreground transition-all duration-300 ${
+                isMenuOpen ? "opacity-0 scale-0" : "opacity-100"
               }`}
             />
             <span
-              className={`block w-6 h-0.5 bg-white mt-1 transition-all duration-300 ${
-                isMenuOpen ? "-rotate-45 -translate-y-1.5" : ""
+              className={`block w-5 h-0.5 bg-foreground transition-all duration-300 origin-center ${
+                isMenuOpen ? "-rotate-45 -translate-y-[3px]" : ""
               }`}
             />
           </div>
@@ -143,57 +153,68 @@ const Navbar = () => {
       </div>
 
       {/* Mobile Menu */}
-      <motion.div
-        initial={{ height: 0, opacity: 0 }}
-        animate={{
-          height: isMenuOpen ? "auto" : 0,
-          opacity: isMenuOpen ? 1 : 0,
-        }}
-        transition={{ duration: 0.3 }}
-        className={`lg:hidden absolute top-full left-0 w-full bg-[#030014]/95 backdrop-blur-lg overflow-hidden ${
-          isMenuOpen ? "py-4" : ""
-        }`}
-      >
-        <div className="flex flex-col items-center gap-5 py-4">
-          {navLinks.map((link) => {
-            const isActive = pathname === link.href;
-            return (
-              <Link
-                key={link.name}
-                href={link.href}
-                className={`text-lg font-medium transition-colors ${
-                  isActive
-                    ? "text-white"
-                    : "text-gray-400 hover:text-white"
-                }`}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="lg:hidden fixed inset-0 top-16 bg-background/95 backdrop-blur-xl z-40"
+          >
+            <div className="flex flex-col items-center justify-center h-full gap-6 pb-20">
+              {navLinks.map((link, index) => {
+                const isActive = pathname === link.href;
+                return (
+                  <motion.div
+                    key={link.name}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                  >
+                    <Link
+                      href={link.href}
+                      className={`text-2xl font-medium transition-colors ${
+                        isActive
+                          ? "text-foreground"
+                          : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      {link.name}
+                    </Link>
+                  </motion.div>
+                );
+              })}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                className="flex items-center gap-4 mt-6"
               >
-                {link.name}
-              </Link>
-            );
-          })}
-          <div className="flex items-center gap-4 mt-4">
-            <ThemeToggle />
-            {Socials.map((social) => (
-              <a
-                key={social.name}
-                href={social.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={social.description}
-                className="p-2 rounded-full bg-[#030014]/50 border border-border hover:bg-primary/20 transition-all duration-300"
-              >
-                <Image
-                  src={social.src}
-                  alt={social.name}
-                  width={24}
-                  height={24}
-                  className="invert"
-                />
-              </a>
-            ))}
-          </div>
-        </div>
-      </motion.div>
+                <ThemeToggle />
+                {Socials.map((social) => (
+                  <a
+                    key={social.name}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={social.description}
+                    className="p-2 rounded-lg hover:bg-muted/30 transition-all"
+                  >
+                    <Image
+                      src={social.src}
+                      alt={social.name}
+                      width={22}
+                      height={22}
+                      className="invert opacity-70"
+                    />
+                  </a>
+                ))}
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.nav>
   );
 };
