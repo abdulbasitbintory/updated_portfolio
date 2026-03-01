@@ -1,9 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/component/Navbar";
-import Footer from "@/component/Footer";
-import StarsCanvas from "@/component/StarBackground";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,7 +31,7 @@ export const metadata: Metadata = {
     title: "Abdul Basit | Full-Stack Developer & Co-Founder",
     description:
       "High-performance web apps & delightful user experiences crafted with Next.js, React & Tailwind CSS.",
-    url: "https://abdulsport.vercel.app",
+    url: "https://www.abdul-basit.me",
     siteName: "Abdul Basit Portfolio",
     locale: "en_PK",
     type: "website",
@@ -63,12 +60,7 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased bg-background text-foreground`}
       >
-        <StarsCanvas />
-        <header>
-          <Navbar />
-        </header>
-        <main className="pt-16 relative z-10">{children}</main>
-        <Footer />
+        {children}
       </body>
     </html>
   );
