@@ -3,6 +3,7 @@ import { Socials } from "@/data";
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import ThemeToggle from "./ThemeToggle";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -71,8 +72,9 @@ const Navbar = () => {
           ))}
         </div>
 
-        {/* Social Icons */}
+        {/* Social Icons & Theme Toggle */}
         <div className="hidden lg:flex items-center gap-4">
+          <ThemeToggle />
           {Socials.map((social) => (
             <a
               key={social.name}
