@@ -9,15 +9,15 @@ CREATE TABLE IF NOT EXISTS projects (
   image_url TEXT,
   github_url TEXT,
   live_url TEXT,
-  technologies TEXT[] NOT NULL DEFAULT '{}',
-  categories TEXT[] NOT NULL DEFAULT '{}',
-  features TEXT[] NOT NULL DEFAULT '{}',
-  accomplishments TEXT[] NOT NULL DEFAULT '{}',
+  technologies TEXT[] DEFAULT '{}',
+  categories TEXT[] DEFAULT '{}',
+  features TEXT[] DEFAULT '{}',
+  accomplishments TEXT[] DEFAULT '{}',
   views INTEGER DEFAULT 0,
   clicks INTEGER DEFAULT 0,
   order_index INTEGER,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Skills table
@@ -25,13 +25,13 @@ CREATE TABLE IF NOT EXISTS skills (
   id BIGSERIAL PRIMARY KEY,
   skill_name VARCHAR(255) NOT NULL,
   icon_url TEXT,
-  proficiency INTEGER NOT NULL CHECK (proficiency >= 0 AND proficiency <= 100),
+  proficiency INTEGER CHECK (proficiency >= 0 AND proficiency <= 100),
   category VARCHAR(100) NOT NULL,
   description TEXT,
   endorsements INTEGER DEFAULT 0,
   order_index INTEGER,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Contact form submissions table
@@ -46,8 +46,8 @@ CREATE TABLE IF NOT EXISTS contact_submissions (
   archived BOOLEAN DEFAULT FALSE,
   ip_address INET,
   user_agent TEXT,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  responded_at TIMESTAMP
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  responded_at TIMESTAMP WITH TIME ZONE
 );
 
 -- Analytics events table
@@ -60,9 +60,7 @@ CREATE TABLE IF NOT EXISTS analytics_events (
   ip_address INET,
   user_agent TEXT,
   session_id UUID,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  INDEX idx_event_type (event_type),
-  INDEX idx_created_at (created_at)
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Testimonials table
@@ -75,8 +73,8 @@ CREATE TABLE IF NOT EXISTS testimonials (
   avatar_url TEXT,
   featured BOOLEAN DEFAULT FALSE,
   order_index INTEGER,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Admin logs for tracking changes
@@ -87,9 +85,7 @@ CREATE TABLE IF NOT EXISTS admin_logs (
   entity_id BIGINT,
   changes JSONB,
   ip_address INET,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  INDEX idx_action (action),
-  INDEX idx_created_at (created_at)
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Dedixor (co-founder section) info
@@ -102,23 +98,22 @@ CREATE TABLE IF NOT EXISTS dedixor_info (
   your_role VARCHAR(255),
   achievements TEXT[],
   featured BOOLEAN DEFAULT TRUE,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Analytics summary (for dashboard)
 CREATE TABLE IF NOT EXISTS analytics_summary (
   id BIGSERIAL PRIMARY KEY,
-  date DATE NOT NULL,
+  date DATE NOT NULL UNIQUE,
   page_views INTEGER DEFAULT 0,
   unique_visitors INTEGER DEFAULT 0,
   contact_submissions INTEGER DEFAULT 0,
   project_clicks INTEGER DEFAULT 0,
-  average_session_duration DECIMAL(10, 2),
-  bounce_rate DECIMAL(5, 2),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE(date)
+  average_session_duration NUMERIC(10, 2),
+  bounce_rate NUMERIC(5, 2),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Create indexes for better performance
@@ -127,6 +122,10 @@ CREATE INDEX IF NOT EXISTS idx_skills_category ON skills (category);
 CREATE INDEX IF NOT EXISTS idx_contact_email ON contact_submissions (email);
 CREATE INDEX IF NOT EXISTS idx_analytics_session ON analytics_events (session_id);
 CREATE INDEX IF NOT EXISTS idx_testimonials_featured ON testimonials (featured);
+CREATE INDEX IF NOT EXISTS idx_event_type ON analytics_events (event_type);
+CREATE INDEX IF NOT EXISTS idx_analytics_created ON analytics_events (created_at);
+CREATE INDEX IF NOT EXISTS idx_admin_action ON admin_logs (action);
+CREATE INDEX IF NOT EXISTS idx_admin_created ON admin_logs (created_at);
 
 -- Enable Row Level Security (RLS) for admin access
 ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
@@ -138,7 +137,7 @@ ALTER TABLE admin_logs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE analytics_summary ENABLE ROW LEVEL SECURITY;
 ALTER TABLE analytics_events ENABLE ROW LEVEL SECURITY;
 
--- Policy for analytics_events (readable by anyone, writable by authenticated users/API)
+-- Policy for analytics_events (readable by anyone, writable by anyone)
 CREATE POLICY "analytics_events_insert" ON analytics_events
   FOR INSERT WITH CHECK (true);
 
@@ -149,8 +148,8 @@ CREATE POLICY "analytics_events_select" ON analytics_events
 CREATE POLICY "contact_insert" ON contact_submissions
   FOR INSERT WITH CHECK (true);
 
--- Policies for projects, skills, testimonials, dedixor_info (public read, admin only write)
-CREATE POLICY "public_read" ON projects FOR SELECT USING (true);
-CREATE POLICY "public_read" ON skills FOR SELECT USING (true);
-CREATE POLICY "public_read" ON testimonials FOR SELECT USING (true);
-CREATE POLICY "public_read" ON dedixor_info FOR SELECT USING (true);
+-- Policies for projects, skills, testimonials, dedixor_info (public read)
+CREATE POLICY "projects_select" ON projects FOR SELECT USING (true);
+CREATE POLICY "skills_select" ON skills FOR SELECT USING (true);
+CREATE POLICY "testimonials_select" ON testimonials FOR SELECT USING (true);
+CREATE POLICY "dedixor_select" ON dedixor_info FOR SELECT USING (true);
