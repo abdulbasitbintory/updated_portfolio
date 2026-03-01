@@ -16,7 +16,7 @@ const RecentProjects = () => {
 
   return (
     <div className="py-20 z-30 items-center" id="projects">
-      <div className="relative z-20 flex flex-col items-center gap-2 sm:gap-3 mt-10 mb-10">
+      <div className="relative z-20 flex flex-col items-center mt-10 mb-10 px-4">
         <h1 className="heading text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold tracking-tight text-center">
           A Small Selection of{" "}
           <span
@@ -26,22 +26,23 @@ const RecentProjects = () => {
             Recent Projects
           </span>
         </h1>
-        <div className="relative w-24 h-1 sm:w-88 md:w-170 bg-linear-to-r from-cyan-500 to-purple-500 rounded-full"></div>
+        <div className="relative w-24 h-1 sm:w-88 md:w-170 bg-linear-to-r from-cyan-500 to-purple-500 rounded-full mt-3"></div>
 
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6 w-full max-w-6xl">
         {projects.map((item) => (
           <a
             href={item.link}
             target="_blank"
             rel="noopener noreferrer"
-            className="lg:min-h-130 h-100 flex items-center justify-center sm:w-96 w-[80vw]"
+            className="lg:min-h-130 h-100 flex items-center justify-center w-full"
             key={item.id}
-            style={{ textDecoration: "none", color: "inherit" }} // Remove underline and keep the default text color
+            style={{ textDecoration: "none", color: "inherit" }}
           >
             <PinContainer
             // title="GITHUB Repository"
             // href="https://github.com/abdulbasitbintory/Portfolio"
             >
-              <div className="relative z-20 flex items-center justify-center sm:w-96 w-[80vw] overflow-hidden h-[20vh] lg:h-[30vh] mb-10">
+              <div className="relative z-20 flex items-center justify-center w-full overflow-hidden h-[20vh] lg:h-[30vh] mb-10">
                 <div
                   className="relative w-full h-full overflow-hidden lg:rounded-3xl"
                   style={{ backgroundColor: "#13162D" }}
@@ -92,6 +93,7 @@ const RecentProjects = () => {
             </PinContainer>
           </a>
         ))}
+        </div>
       </div>
     </div>
   );
