@@ -1,13 +1,27 @@
 "use client";
+
 import { Socials } from "@/data";
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import ThemeToggle from "./ThemeToggle";
 
+const navLinks = [
+  { name: "Home", href: "/" },
+  { name: "Skills", href: "/skills" },
+  { name: "Projects", href: "/projects" },
+  { name: "Certifications", href: "/certifications" },
+  { name: "Education", href: "/education" },
+  { name: "Events", href: "/events" },
+  { name: "Contact", href: "/contact" },
+];
+
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,18 +31,13 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navLinks = [
-    { name: "About", href: "#about-me" },
-    { name: "Skills", href: "#skills" },
-    { name: "Projects", href: "#projects" },
-    { name: "Certifications", href: "#certifications" },
-    { name: "Education", href: "#education" },
-    { name: "Events", href: "#events" },
-    { name: "Contact", href: "#contact" },
-  ];
+  // Close menu on route change
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [pathname]);
 
   return (
-    <motion.div
+    <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
@@ -40,40 +49,51 @@ const Navbar = () => {
     >
       <div className="w-full h-full flex items-center justify-between px-4 md:px-10">
         {/* Logo */}
-        <a href="#about-me" className="h-auto w-auto flex items-center">
+        <Link href="/" className="h-auto w-auto flex items-center">
           <div className="flex items-center gap-2">
             <div className="relative">
               <Image
-                src="globe4.svg"
-                alt="logo"
+                src="/globe4.svg"
+                alt="Abdul Basit Portfolio Logo"
                 width={50}
                 height={50}
                 className="cursor-pointer hover:animate-pulse"
               />
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-purple-500 rounded-full animate-ping"></div>
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full animate-ping" />
             </div>
-            <span className="font-bold text-xl bg-clip-text text-transparent bg-linear-to-r from-purple-500 to-cyan-500">
-              Abdul Basit's Portfolio
+            <span className="font-bold text-xl bg-clip-text text-transparent bg-linear-to-r from-primary to-accent hidden sm:inline">
+              Abdul Basit
             </span>
           </div>
-        </a>
+        </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden lg:flex items-center gap-8">
-          {navLinks.map((link, index) => (
-            <a
-              key={index}
-              href={link.href}
-              className="relative text-medium font-bold text-gray-300 hover:text-white transition-colors group"
-            >
-              {link.name}
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-500 group-hover:w-full transition-all duration-300"></span>
-            </a>
-          ))}
+        <div className="hidden lg:flex items-center gap-6">
+          {navLinks.map((link) => {
+            const isActive = pathname === link.href;
+            return (
+              <Link
+                key={link.name}
+                href={link.href}
+                className={`relative text-sm font-medium transition-colors group ${
+                  isActive
+                    ? "text-white"
+                    : "text-gray-400 hover:text-white"
+                }`}
+              >
+                {link.name}
+                <span
+                  className={`absolute -bottom-1 left-0 h-0.5 bg-primary transition-all duration-300 ${
+                    isActive ? "w-full" : "w-0 group-hover:w-full"
+                  }`}
+                />
+              </Link>
+            );
+          })}
         </div>
 
         {/* Social Icons & Theme Toggle */}
-        <div className="hidden lg:flex items-center gap-4">
+        <div className="hidden lg:flex items-center gap-3">
           <ThemeToggle />
           {Socials.map((social) => (
             <a
@@ -81,14 +101,15 @@ const Navbar = () => {
               href={social.url}
               target="_blank"
               rel="noopener noreferrer"
-              className=" rounded-full bg-[#030014]/50 border border-[#7042f861] hover:bg-purple-500/20 transition-all duration-300"
+              aria-label={social.description}
+              className="p-1.5 rounded-full bg-[#030014]/50 border border-border hover:bg-primary/20 transition-all duration-300"
             >
               <Image
                 src={social.src}
                 alt={social.name}
-                width={24}
-                height={24}
-                className="invert filter"
+                width={20}
+                height={20}
+                className="invert"
               />
             </a>
           ))}
@@ -98,17 +119,25 @@ const Navbar = () => {
         <button
           className="lg:hidden z-50"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
+          aria-label="Toggle navigation menu"
+          aria-expanded={isMenuOpen}
         >
           <div className="w-8 h-8 flex flex-col justify-center items-center">
             <span
-              className={`block w-6 h-0.5 bg-white transition-all duration-300 ${isMenuOpen ? "rotate-45 translate-y-1.5" : ""}`}
-            ></span>
+              className={`block w-6 h-0.5 bg-white transition-all duration-300 ${
+                isMenuOpen ? "rotate-45 translate-y-1.5" : ""
+              }`}
+            />
             <span
-              className={`block w-6 h-0.5 bg-white mt-1 transition-all duration-300 ${isMenuOpen ? "opacity-0" : "opacity-100"}`}
-            ></span>
+              className={`block w-6 h-0.5 bg-white mt-1 transition-all duration-300 ${
+                isMenuOpen ? "opacity-0" : "opacity-100"
+              }`}
+            />
             <span
-              className={`block w-6 h-0.5 bg-white mt-1 transition-all duration-300 ${isMenuOpen ? "-rotate-45 -translate-y-1.5" : ""}`}
-            ></span>
+              className={`block w-6 h-0.5 bg-white mt-1 transition-all duration-300 ${
+                isMenuOpen ? "-rotate-45 -translate-y-1.5" : ""
+              }`}
+            />
           </div>
         </button>
       </div>
@@ -121,41 +150,51 @@ const Navbar = () => {
           opacity: isMenuOpen ? 1 : 0,
         }}
         transition={{ duration: 0.3 }}
-        className={`xl:hidden absolute top-full left-0 w-full bg-[#030014]/95 backdrop-blur-lg overflow-hidden ${isMenuOpen ? "py-4" : ""}`}
+        className={`lg:hidden absolute top-full left-0 w-full bg-[#030014]/95 backdrop-blur-lg overflow-hidden ${
+          isMenuOpen ? "py-4" : ""
+        }`}
       >
-        <div className="flex flex-col items-center gap-6 py-4">
-          {navLinks.map((link, index) => (
-            <a
-              key={index}
-              href={link.href}
-              className="text-xl text-gray-300 hover:text-white transition-colors"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              {link.name}
-            </a>
-          ))}
+        <div className="flex flex-col items-center gap-5 py-4">
+          {navLinks.map((link) => {
+            const isActive = pathname === link.href;
+            return (
+              <Link
+                key={link.name}
+                href={link.href}
+                className={`text-lg font-medium transition-colors ${
+                  isActive
+                    ? "text-white"
+                    : "text-gray-400 hover:text-white"
+                }`}
+              >
+                {link.name}
+              </Link>
+            );
+          })}
           <div className="flex items-center gap-4 mt-4">
+            <ThemeToggle />
             {Socials.map((social) => (
               <a
                 key={social.name}
                 href={social.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-full bg-[#030014]/50 border border-[#7042f861] hover:bg-purple-500/20 transition-all duration-300"
+                aria-label={social.description}
+                className="p-2 rounded-full bg-[#030014]/50 border border-border hover:bg-primary/20 transition-all duration-300"
               >
                 <Image
                   src={social.src}
                   alt={social.name}
                   width={24}
                   height={24}
-                  className=""
+                  className="invert"
                 />
               </a>
             ))}
           </div>
         </div>
       </motion.div>
-    </motion.div>
+    </motion.nav>
   );
 };
 

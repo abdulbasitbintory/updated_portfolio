@@ -1,41 +1,38 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useTheme } from '@/context/ThemeContext';
 
 interface ServiceCard {
   title: string;
   description: string;
-  icon: string;
+  icon: React.ReactNode;
   color: string;
 }
 
 export default function ProductBuilderShowcase() {
-  const { theme } = useTheme();
-
   const services: ServiceCard[] = [
     {
       title: 'Product Design',
       description: 'User-centric design that combines aesthetics with functionality',
-      icon: '🎨',
+      icon: <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 text-pink-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42" /></svg>,
       color: 'from-pink-500 to-purple-500',
     },
     {
       title: 'Full-Stack Engineering',
       description: 'End-to-end development with modern tech stack and best practices',
-      icon: '⚙️',
+      icon: <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" /></svg>,
       color: 'from-purple-500 to-cyan-500',
     },
     {
       title: 'Product Strategy',
       description: 'Strategic guidance from conception to market launch',
-      icon: '📊',
+      icon: <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" /></svg>,
       color: 'from-cyan-500 to-blue-500',
     },
     {
       title: 'Scalability & Performance',
       description: 'Building products that grow with your business needs',
-      icon: '🚀',
+      icon: <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.841m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" /></svg>,
       color: 'from-blue-500 to-green-500',
     },
   ];
@@ -44,23 +41,17 @@ export default function ProductBuilderShowcase() {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
+      transition: { staggerChildren: 0.1 },
     },
   };
 
   const cardVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5 },
-    },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
   };
 
   return (
-    <section className={`py-20 ${theme === 'dark' ? 'bg-gradient-to-b from-[#030014] to-[#0a0015]' : 'bg-white'}`}>
+    <section className="py-20">
       <div className="w-full max-w-6xl mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -68,11 +59,11 @@ export default function ProductBuilderShowcase() {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <h2 className={`text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500`}>
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-balance bg-clip-text text-transparent bg-linear-to-r from-purple-500 via-pink-500 to-cyan-500">
             Product Builder & Engineer
           </h2>
-          <p className={`text-lg max-w-2xl mx-auto ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
-            I don't just build features—I build complete products that solve real problems and delight users
+          <p className="text-lg max-w-2xl mx-auto text-gray-300">
+            {"I don't just build features\u2014I build complete products that solve real problems and delight users"}
           </p>
         </motion.div>
 
@@ -87,25 +78,17 @@ export default function ProductBuilderShowcase() {
             <motion.div
               key={service.title}
               variants={cardVariants}
-              className={`group relative overflow-hidden rounded-xl p-8 border backdrop-blur-sm cursor-pointer transition-all duration-300 hover:scale-105 ${
-                theme === 'dark'
-                  ? 'border-[#7042f861] bg-gradient-to-br from-gray-900/50 to-gray-800/50 hover:from-gray-900/80 hover:to-gray-800/80'
-                  : 'border-purple-200/50 bg-gradient-to-br from-white/50 to-white/30 hover:from-white/80 hover:to-white/60'
-              }`}
+              className="group relative overflow-hidden rounded-xl p-8 border border-border backdrop-blur-sm bg-linear-to-br from-gray-900/50 to-gray-800/50 hover:from-gray-900/80 hover:to-gray-800/80 cursor-pointer transition-all duration-300 hover:scale-[1.03]"
             >
-              <div className={`absolute inset-0 bg-gradient-to-br ${service.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300`} />
+              <div className={`absolute inset-0 bg-linear-to-br ${service.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300`} />
               
               <div className="relative z-10 space-y-4">
-                <div className="text-5xl">{service.icon}</div>
-                <h3 className={`text-xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                  {service.title}
-                </h3>
-                <p className={`${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
-                  {service.description}
-                </p>
+                <div>{service.icon}</div>
+                <h3 className="text-xl font-bold text-white">{service.title}</h3>
+                <p className="text-gray-300">{service.description}</p>
               </div>
 
-              <div className={`absolute -bottom-1 -right-1 w-32 h-32 bg-gradient-to-br ${service.color} rounded-full opacity-0 group-hover:opacity-20 blur-2xl transition-opacity duration-300`} />
+              <div className={`absolute -bottom-1 -right-1 w-32 h-32 bg-linear-to-br ${service.color} rounded-full opacity-0 group-hover:opacity-20 blur-2xl transition-opacity duration-300`} />
             </motion.div>
           ))}
         </motion.div>
@@ -115,49 +98,25 @@ export default function ProductBuilderShowcase() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className={`p-8 rounded-xl border backdrop-blur-sm ${
-            theme === 'dark'
-              ? 'border-[#7042f861] bg-gradient-to-r from-purple-900/20 to-cyan-900/20'
-              : 'border-purple-300/30 bg-gradient-to-r from-purple-50 to-cyan-50'
-          }`}
+          className="p-8 rounded-xl border border-border backdrop-blur-sm bg-linear-to-r from-purple-900/20 to-cyan-900/20"
         >
-          <h3 className={`text-2xl font-bold mb-6 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+          <h3 className="text-2xl font-bold mb-6 text-white">
             My Development Approach
           </h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-              {
-                step: '01',
-                title: 'Understand',
-                description: 'Deep dive into your vision, market, and user needs',
-              },
-              {
-                step: '02',
-                title: 'Design',
-                description: 'Create beautiful, intuitive experiences grounded in research',
-              },
-              {
-                step: '03',
-                title: 'Build & Scale',
-                description: 'Engineer robust, performant solutions built for growth',
-              },
+              { step: '01', title: 'Understand', description: 'Deep dive into your vision, market, and user needs' },
+              { step: '02', title: 'Design', description: 'Create beautiful, intuitive experiences grounded in research' },
+              { step: '03', title: 'Build & Scale', description: 'Engineer robust, performant solutions built for growth' },
             ].map((item) => (
-              <motion.div
-                key={item.step}
-                whileHover={{ y: -5 }}
-                className="space-y-2"
-              >
-                <div className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-cyan-500">
+              <div key={item.step} className="text-center space-y-3">
+                <div className="text-3xl font-bold bg-clip-text text-transparent bg-linear-to-r from-purple-500 to-cyan-500">
                   {item.step}
                 </div>
-                <h4 className={`text-lg font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                  {item.title}
-                </h4>
-                <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
-                  {item.description}
-                </p>
-              </motion.div>
+                <h4 className="text-lg font-semibold text-white">{item.title}</h4>
+                <p className="text-gray-400 text-sm">{item.description}</p>
+              </div>
             ))}
           </div>
         </motion.div>

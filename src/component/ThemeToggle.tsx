@@ -1,6 +1,6 @@
 'use client';
 
-import { Moon, Sun } from 'react-icons/fa';
+import { FaMoon, FaSun } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 
 export default function ThemeToggle() {
@@ -11,9 +11,11 @@ export default function ThemeToggle() {
     const stored = localStorage.getItem('theme') as 'light' | 'dark' | null;
     if (stored) {
       setTheme(stored);
+      document.documentElement.classList.toggle('dark', stored === 'dark');
     } else {
       const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       setTheme(isDark ? 'dark' : 'light');
+      document.documentElement.classList.toggle('dark', isDark);
     }
     setMounted(true);
   }, []);
@@ -34,9 +36,9 @@ export default function ThemeToggle() {
       aria-label="Toggle theme"
     >
       {theme === 'dark' ? (
-        <Sun className="w-5 h-5" />
+        <FaSun className="w-5 h-5" />
       ) : (
-        <Moon className="w-5 h-5" />
+        <FaMoon className="w-5 h-5" />
       )}
     </button>
   );

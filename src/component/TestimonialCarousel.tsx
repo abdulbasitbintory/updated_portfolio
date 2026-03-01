@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTheme } from '@/context/ThemeContext';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
 interface Testimonial {
@@ -11,100 +10,69 @@ interface Testimonial {
   role: string;
   company: string;
   content: string;
-  avatar_url: string;
+  initials: string;
   featured: boolean;
 }
 
+const defaultTestimonials: Testimonial[] = [
+  {
+    id: 1,
+    name: 'Ahmed Hassan',
+    role: 'Product Lead',
+    company: 'TechStartup Inc',
+    content: 'Abdul transformed our vision into reality. His full-stack expertise and attention to detail resulted in a product that exceeded our expectations.',
+    initials: 'AH',
+    featured: true,
+  },
+  {
+    id: 2,
+    name: 'Sarah Williams',
+    role: 'CEO',
+    company: 'Design Studio Co',
+    content: 'Working with Abdul was a game-changer. His ability to bridge design and engineering created seamless user experiences that our customers love.',
+    initials: 'SW',
+    featured: true,
+  },
+  {
+    id: 3,
+    name: 'Malik Ahmed',
+    role: 'CTO',
+    company: 'Enterprise Solutions',
+    content: 'The scalability and performance of the system Abdul built for us is outstanding. He understood our growth trajectory perfectly.',
+    initials: 'MA',
+    featured: true,
+  },
+];
+
 export default function TestimonialCarousel() {
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [testimonials] = useState<Testimonial[]>(defaultTestimonials);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const { theme } = useTheme();
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
   useEffect(() => {
-    fetchTestimonials();
-  }, []);
-
-  const fetchTestimonials = async () => {
-    try {
-      // Fetch featured testimonials from Supabase
-      const { data, error } = await fetch('/api/admin/testimonials')
-        .then(res => res.json())
-        .catch(() => ({ data: [], error: true }));
-
-      if (!error && data) {
-        const featured = data.filter((t: Testimonial) => t.featured);
-        setTestimonials(featured.length > 0 ? featured : getDefaultTestimonials());
-      } else {
-        setTestimonials(getDefaultTestimonials());
-      }
-    } catch (err) {
-      console.error('Error fetching testimonials:', err);
-      setTestimonials(getDefaultTestimonials());
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const getDefaultTestimonials = (): Testimonial[] => [
-    {
-      id: 1,
-      name: 'Ahmed Hassan',
-      role: 'Product Lead',
-      company: 'TechStartup Inc',
-      content: 'Abdul transformed our vision into reality. His full-stack expertise and attention to detail resulted in a product that exceeded our expectations.',
-      avatar_url: '👨‍💼',
-      featured: true,
-    },
-    {
-      id: 2,
-      name: 'Sarah Williams',
-      role: 'CEO',
-      company: 'Design Studio Co',
-      content: 'Working with Abdul was a game-changer. His ability to bridge design and engineering created seamless user experiences that our customers love.',
-      avatar_url: '👩‍💼',
-      featured: true,
-    },
-    {
-      id: 3,
-      name: 'Malik Ahmed',
-      role: 'CTO',
-      company: 'Enterprise Solutions',
-      content: 'The scalability and performance of the system Abdul built for us is outstanding. He understood our growth trajectory perfectly.',
-      avatar_url: '👨‍💻',
-      featured: true,
-    },
-  ];
+    if (!isAutoPlaying || testimonials.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [isAutoPlaying, testimonials.length]);
 
   const handleNext = () => {
+    setIsAutoPlaying(false);
     setCurrentIndex((prev) => (prev + 1) % testimonials.length);
   };
 
   const handlePrev = () => {
+    setIsAutoPlaying(false);
     setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
   };
 
-  if (loading || testimonials.length === 0) {
-    return (
-      <section className={`py-20 ${theme === 'dark' ? 'bg-[#030014]' : 'bg-white'}`}>
-        <div className="w-full max-w-5xl mx-auto px-4">
-          <div className="text-center">
-            <h2 className={`text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500`}>
-              What People Say
-            </h2>
-            <p className={`text-lg ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
-              Loading testimonials...
-            </p>
-          </div>
-        </div>
-      </section>
-    );
-  }
+  if (testimonials.length === 0) return null;
 
   const currentTestimonial = testimonials[currentIndex];
 
   return (
-    <section className={`py-20 ${theme === 'dark' ? 'bg-[#030014]' : 'bg-white'}`}>
+    <section className="py-20">
       <div className="w-full max-w-5xl mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -114,45 +82,41 @@ export default function TestimonialCarousel() {
         >
           {/* Header */}
           <div className="text-center space-y-4">
-            <h2 className={`text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500`}>
+            <h2 className="text-4xl md:text-5xl font-bold text-balance bg-clip-text text-transparent bg-linear-to-r from-purple-500 via-pink-500 to-cyan-500">
               What People Say
             </h2>
-            <p className={`text-lg ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
-              Feedback from colleagues and clients I've worked with
+            <p className="text-lg text-gray-300">
+              {"Feedback from colleagues and clients I've worked with"}
             </p>
           </div>
 
           {/* Carousel */}
-          <div className={`relative p-8 rounded-xl border backdrop-blur-sm min-h-96 flex flex-col justify-center ${
-            theme === 'dark'
-              ? 'border-[#7042f861] bg-gradient-to-r from-purple-900/20 to-cyan-900/20'
-              : 'border-purple-300/30 bg-gradient-to-r from-purple-50 to-cyan-50'
-          }`}>
+          <div className="relative p-8 md:p-12 rounded-xl border border-border backdrop-blur-sm bg-linear-to-r from-purple-900/20 to-cyan-900/20 min-h-72 flex flex-col justify-center">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentIndex}
-                initial={{ opacity: 0, x: 100 }}
+                initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -100 }}
-                transition={{ duration: 0.5 }}
+                exit={{ opacity: 0, x: -50 }}
+                transition={{ duration: 0.4 }}
                 className="space-y-6"
               >
                 {/* Quote Mark */}
-                <div className="text-5xl text-purple-500/30">{"'"}</div>
+                <div className="text-5xl text-purple-500/30 font-serif">{'"'}</div>
 
                 {/* Testimonial Content */}
-                <p className={`text-xl leading-relaxed italic ${theme === 'dark' ? 'text-gray-200' : 'text-gray-800'}`}>
+                <p className="text-xl leading-relaxed italic text-gray-200">
                   {currentTestimonial.content}
                 </p>
 
                 {/* Author */}
                 <div className="flex items-center gap-4 pt-6 border-t border-gray-500/20">
-                  <div className="text-4xl">{currentTestimonial.avatar_url}</div>
+                  <div className="w-12 h-12 rounded-full bg-linear-to-br from-purple-500 to-cyan-500 flex items-center justify-center text-white font-bold text-sm">
+                    {currentTestimonial.initials}
+                  </div>
                   <div>
-                    <p className={`font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                      {currentTestimonial.name}
-                    </p>
-                    <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                    <p className="font-bold text-white">{currentTestimonial.name}</p>
+                    <p className="text-sm text-gray-400">
                       {currentTestimonial.role} at {currentTestimonial.company}
                     </p>
                   </div>
@@ -164,21 +128,15 @@ export default function TestimonialCarousel() {
             <div className="absolute bottom-6 right-6 flex gap-2">
               <button
                 onClick={handlePrev}
-                className={`p-2 rounded-full transition-all ${
-                  theme === 'dark'
-                    ? 'bg-gray-800 hover:bg-purple-500'
-                    : 'bg-gray-200 hover:bg-purple-500'
-                } text-gray-600 hover:text-white`}
+                aria-label="Previous testimonial"
+                className="p-2 rounded-full bg-gray-800 hover:bg-primary text-gray-400 hover:text-white transition-all"
               >
                 <FiChevronLeft className="w-5 h-5" />
               </button>
               <button
                 onClick={handleNext}
-                className={`p-2 rounded-full transition-all ${
-                  theme === 'dark'
-                    ? 'bg-gray-800 hover:bg-purple-500'
-                    : 'bg-gray-200 hover:bg-purple-500'
-                } text-gray-600 hover:text-white`}
+                aria-label="Next testimonial"
+                className="p-2 rounded-full bg-gray-800 hover:bg-primary text-gray-400 hover:text-white transition-all"
               >
                 <FiChevronRight className="w-5 h-5" />
               </button>
@@ -188,15 +146,18 @@ export default function TestimonialCarousel() {
           {/* Dots */}
           <div className="flex justify-center gap-2">
             {testimonials.map((_, index) => (
-              <motion.button
+              <button
                 key={index}
-                onClick={() => setCurrentIndex(index)}
+                onClick={() => {
+                  setIsAutoPlaying(false);
+                  setCurrentIndex(index);
+                }}
+                aria-label={`Go to testimonial ${index + 1}`}
                 className={`h-2 rounded-full transition-all ${
                   index === currentIndex
-                    ? 'w-8 bg-purple-500'
-                    : `w-2 ${theme === 'dark' ? 'bg-gray-600' : 'bg-gray-300'}`
+                    ? 'w-8 bg-primary'
+                    : 'w-2 bg-gray-600 hover:bg-gray-500'
                 }`}
-                whileHover={{ scale: 1.1 }}
               />
             ))}
           </div>

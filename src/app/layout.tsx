@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/component/Navbar";
@@ -16,31 +16,26 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Abdul Basit | Full-Stack Developer & UI/UX Designer | Portfolio",
+  title: {
+    default: "Abdul Basit | Full-Stack Developer & Co-Founder",
+    template: "%s | Abdul Basit Portfolio",
+  },
   description:
-    "Explore the portfolio of Abdul Basit, a Karachi-based full-stack developer & UI/UX designer who crafts pixel-perfect, high-performance web apps with Next.js, React & Tailwind CSS. View recent projects, Coursera certifications and get in touch.",
+    "Explore the portfolio of Abdul Basit, a Karachi-based full-stack developer & UI/UX designer who crafts pixel-perfect, high-performance web apps with Next.js, React & Tailwind CSS.",
   keywords: [
     "Next.js portfolio",
     "React developer Karachi",
     "full-stack developer Pakistan",
     "UI/UX designer portfolio",
     "Abdul Basit developer",
-    "modern web apps",
+    "Dedixor co-founder",
   ],
   openGraph: {
-    title: "Abdul Basit's Portfolio",
+    title: "Abdul Basit | Full-Stack Developer & Co-Founder",
     description:
       "High-performance web apps & delightful user experiences crafted with Next.js, React & Tailwind CSS.",
-    url: "https://yourdomain.vercel.app",
+    url: "https://abdulsport.vercel.app",
     siteName: "Abdul Basit Portfolio",
-    images: [
-      {
-        url: "https://abdulsport.vercel.app/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Abdul Basit Portfolio Preview",
-      },
-    ],
     locale: "en_PK",
     type: "website",
   },
@@ -48,8 +43,13 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Abdul Basit | Full-Stack Developer",
     description: "Modern web & UI/UX portfolio built with Next.js.",
-    images: ["https://abdulsport.vercel.app/og-image.png"],
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#030014",
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
@@ -61,13 +61,13 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased bg-background text-foreground`}
       >
         <StarsCanvas />
         <header>
           <Navbar />
         </header>
-        <main>{children}</main>
+        <main className="pt-[70px]">{children}</main>
         <Footer />
       </body>
     </html>
