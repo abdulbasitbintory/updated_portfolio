@@ -4,7 +4,6 @@ import "./globals.css";
 import Navbar from "@/component/Navbar";
 import Footer from "@/component/Footer";
 import StarsCanvas from "@/component/StarBackground";
-import { ThemeProvider } from "@/context/ThemeContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -64,14 +63,12 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider>
-          <StarsCanvas />
-          <header>
-            <Navbar />
-          </header>
-          <main>{children}</main>
-          <Footer />
-        </ThemeProvider>
+        <StarsCanvas />
+        <header>
+          <Navbar />
+        </header>
+        <main>{children}</main>
+        <Footer />
       </body>
     </html>
   );
